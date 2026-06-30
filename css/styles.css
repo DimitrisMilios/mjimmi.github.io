@@ -596,3 +596,43 @@ section {
         opacity: 1 !important;
     }
 }
+
+/* =========================================
+   PROJECT PAGES
+   ========================================= */
+.project-hero {
+    min-height: 50vh;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+}
+
+.project-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.project-links {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.project-gallery {
+    padding: 4rem 0;
+    column-count: 2;
+    column-gap: 2rem;
+}
+
+.project-gallery img {
+    width: 100%;
+    margin-bottom: 2rem;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .project-gallery {
+        column-count: 1;
+    }
+}
