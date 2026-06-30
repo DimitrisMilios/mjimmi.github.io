@@ -110,6 +110,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
+       CUSTOM ABOUT SECTION ANIMATION
+       ========================================= */
+    const aboutText = document.querySelector('.about-text');
+    if (aboutText) {
+        // Continuous logo floating animation
+        gsap.to('.about-logo', {
+            rotation: 10,
+            y: -15,
+            duration: 2.5,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+
+        // Split paragraph into words for sequential reveal
+        const paragraph = document.querySelector('.about-paragraph');
+        if (paragraph) {
+            const words = paragraph.innerText.split(' ');
+            paragraph.innerHTML = '';
+            words.forEach(word => {
+                const wordWrap = document.createElement('span');
+                wordWrap.style.display = 'inline-block';
+                wordWrap.style.overflow = 'hidden';
+                wordWrap.style.verticalAlign = 'top';
+                wordWrap.style.marginRight = '0.3em';
+                wordWrap.style.paddingTop = '5px';
+                
+                const innerWord = document.createElement('span');
+                innerWord.innerText = word;
+                innerWord.style.display = 'inline-block';
+                innerWord.classList.add('about-word');
+                
+                wordWrap.appendChild(innerWord);
+                paragraph.appendChild(wordWrap);
+            });
+        }
+
+        // ScrollTrigger for About Section
+        const aboutTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.about-text',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            }
+        });
+
+        // Add pop in for the logo
+        aboutTl.from('.about-logo', {
+            scale: 0,
+            rotation: -45,
+            opacity: 0,
+            duration: 0.8,
+            ease: "back.out(1.7)"
+        })
+        .from('.about-heading', {
+            x: -30,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out"
+        }, "-=0.4")
+        .from('.about-word', {
+            y: "150%",
+            rotation: 12,
+            opacity: 0,
+            duration: 0.5,
+            stagger: 0.03,
+            ease: "back.out(1.2)"
+        }, "-=0.2")
+        .from('.stats-grid .stat-card', {
+            y: 50,
+            opacity: 0,
+            rotation: -5,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power3.out"
+        }, "-=0.4");
+    }
+
+    /* =========================================
        SCROLL REVEALS
        ========================================= */
     
