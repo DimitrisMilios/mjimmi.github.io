@@ -69,6 +69,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
+       PROJECT PAGE ANIMATIONS (ON LOAD)
+       ========================================= */
+    // Set initial state to prevent flash of unstyled content
+    gsap.set(".project-anim", { y: 30, opacity: 0 });
+    
+    // Animate in smoothly without scroll trigger
+    gsap.to(".project-anim", {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        delay: 0.1
+    });
+
+    /* =========================================
        BACKGROUND SHAPE FLOATING
        ========================================= */
     // Subtle persistent animation for shapes
@@ -114,6 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
             animProps = { y: 150, opacity: 0, rotation: (index % 2 === 0) ? -5 : 5, scale: 0.9 };
         } else if (el.classList.contains('work-card')) {
             animProps = { y: 100, opacity: 0, rotation: (index % 2 === 0) ? 2 : -2 };
+        } else if (el.classList.contains('hero-subtitle') || el.classList.contains('project-title') || el.tagName.toLowerCase() === 'p') {
+            // Text blocks look janky when rotated during animation. Just slide and fade.
+            animProps = { y: 30, opacity: 0, rotation: 0 };
         }
 
         gsap.from(el, {
