@@ -96,10 +96,10 @@ p {
 }
 
 /* Utility Colors */
-.color-pink { background-color: var(--color-pink); color: var(--color-white); }
-.color-yellow { background-color: var(--color-yellow); color: var(--color-black); }
-.color-blue { background-color: var(--color-blue); color: var(--color-white); }
-.color-white { background-color: var(--color-white); color: var(--color-black); }
+.color-pink { background-color: var(--color-pink) !important; color: var(--color-white) !important; }
+.color-yellow { background-color: var(--color-yellow) !important; color: var(--color-black) !important; }
+.color-blue { background-color: var(--color-blue) !important; color: var(--color-white) !important; }
+.color-white { background-color: var(--color-white) !important; color: var(--color-black) !important; }
 
 /* =========================================
    COMPONENTS
