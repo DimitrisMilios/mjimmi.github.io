@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // We use IntersectionObserver to check which section is currently most visible in the viewport
         const observerOptions = {
             root: null,
-            rootMargin: '-30% 0px -70% 0px', // Trigger when section top enters upper 30% of screen
+            rootMargin: '-20% 0px -40% 0px', // Safe positive area to prevent iOS infinite loops
             threshold: 0
         };
 
