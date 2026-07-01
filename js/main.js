@@ -240,4 +240,38 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+
+    /* =========================================
+       SCROLL SPY FOR NAVIGATION
+       ========================================= */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    if (sections.length > 0 && navLinks.length > 0) {
+        // We use IntersectionObserver to check which section is currently most visible in the viewport
+        const observerOptions = {
+            root: null,
+            rootMargin: '-30% 0px -70% 0px', // Trigger when section top enters upper 30% of screen
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        // Add active class if href matches the id of intersecting section
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
 });
