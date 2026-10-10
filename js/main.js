@@ -2,7 +2,16 @@
 gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener("DOMContentLoaded", () => {
-    
+
+    // Keep --header-h in sync so the hero fills exactly one screen below the sticky header
+    const header = document.querySelector(".header");
+    const setHeaderHeight = () => {
+        if (header) document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+    };
+    setHeaderHeight();
+    window.addEventListener("resize", setHeaderHeight);
+    window.addEventListener("load", setHeaderHeight);
+
     // Check for prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

@@ -21,6 +21,9 @@
     --shadow-hover: 4px 4px 0 var(--color-black);
     --shadow-inset: inset 4px 4px 0 var(--color-black);
     --transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+
+    /* Sticky header height, kept in sync by js/main.js */
+    --header-h: 92px;
 }
 
 * {
@@ -265,7 +268,10 @@ section {
 /* Hero Section */
 .hero {
     position: relative;
-    min-height: 80vh;
+    /* Fill exactly the first screen: viewport minus the sticky header */
+    min-height: calc(100vh - var(--header-h));
+    min-height: calc(100svh - var(--header-h));
+    padding: clamp(1.5rem, 4vh, 4rem) 0;
     display: flex;
     align-items: center;
 }
@@ -276,10 +282,11 @@ section {
 }
 
 .hero-title {
-    font-size: clamp(3rem, 10vw, 8rem);
+    /* Scales with width AND height so four lines always fit above the fold */
+    font-size: clamp(2.4rem, min(9.5vw, 12vh), 8rem);
     letter-spacing: -2px;
     line-height: 0.9;
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1rem, 3vh, 2rem);
 }
 
 .line-wrap {
@@ -292,10 +299,38 @@ section {
 }
 
 .hero-subtitle {
-    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-size: clamp(1rem, min(2.4vw, 3vh), 2rem);
     font-weight: bold;
     max-width: 600px;
-    margin-bottom: 3rem;
+    margin-bottom: clamp(1.25rem, 4vh, 3rem);
+}
+
+/* Short landscape viewports (a phone on its side): tighten the hero so it still fits one screen */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        padding: 1rem 0;
+    }
+
+    .hero-title {
+        font-size: clamp(1.8rem, 9vh, 4rem);
+        margin-bottom: 0.75rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        max-width: 60%;
+    }
+
+    .hero-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+    }
+
+    .hero-shape-1, .hero-shape-2 {
+        opacity: 0.5;
+        z-index: -1;
+    }
 }
 
 /* Decorative background shapes in hero */
@@ -715,10 +750,6 @@ section {
 }
 
 @media (max-width: 480px) {
-    .hero-title {
-        margin-top: 2rem;
-    }
-    
     .brutal-btn {
         padding: 0.8rem 1.5rem;
         font-size: 1rem;
