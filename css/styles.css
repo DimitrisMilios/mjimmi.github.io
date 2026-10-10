@@ -814,3 +814,200 @@ section {
     margin-bottom: 1.5rem;
     display: block;
 }
+
+/* =========================================
+   PROJECT PAGE DETAILS
+   ========================================= */
+.project-section {
+    padding: 2rem 0;
+}
+
+.project-section .section-title {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin-bottom: 2rem;
+}
+
+.project-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 1.5rem;
+}
+
+.project-facts .stat-num {
+    font-size: 2.2rem;
+}
+
+.project-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 2.5rem;
+}
+
+.project-card-title {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.project-columns .card p,
+.project-tech p {
+    font-size: 1.05rem;
+}
+
+.project-columns .service-list li,
+.project-tech .service-list li {
+    font-size: 1rem;
+    align-items: flex-start;
+}
+
+.project-columns .service-list li::before,
+.project-tech .service-list li::before {
+    flex-shrink: 0;
+}
+
+.project-columns .card.color-blue .service-list li,
+.project-columns .card.color-pink .service-list li {
+    border-bottom-color: var(--color-white);
+}
+
+.project-tech .service-list {
+    margin-top: 0;
+}
+
+.project-note {
+    font-size: 0.95rem;
+    border-left: var(--border-thick);
+    padding-left: 1rem;
+    max-width: 800px;
+}
+
+.project-note a {
+    color: var(--color-black);
+    font-weight: bold;
+}
+
+/* Veldash dashboard illustration */
+.hud {
+    position: relative;
+    height: 400px;
+    background-color: #0B0C10;
+    border: var(--border-thick);
+    box-shadow: var(--shadow-hard);
+    overflow: hidden;
+    color: var(--color-white);
+    font-family: var(--font-body);
+    background-image:
+        linear-gradient(#1a1c22 1px, transparent 1px),
+        linear-gradient(90deg, #1a1c22 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.hud-route {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hud-car {
+    position: absolute;
+    width: 180px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -62%);
+    filter: drop-shadow(0 0 18px rgba(230, 251, 4, 0.55));
+}
+
+.hud-island {
+    position: absolute;
+    background-color: rgba(11, 12, 16, 0.9);
+    border: 1px solid #3A3D44;
+    padding: 0.6rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-weight: bold;
+}
+
+.hud-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #A0A4AD;
+}
+
+.hud-big {
+    font-size: 1.6rem;
+    line-height: 1.1;
+}
+
+.hud-yellow { color: var(--color-yellow); }
+
+.hud-pill {
+    top: 16px;
+    left: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1rem;
+}
+
+.hud-turn {
+    top: 70px;
+    left: 16px;
+    border-left: 6px solid var(--color-yellow);
+}
+
+.hud-arrow {
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--color-yellow);
+}
+
+.hud-trip {
+    bottom: 16px;
+    left: 16px;
+}
+
+.hud-speed {
+    bottom: 16px;
+    right: 16px;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 1.6rem;
+}
+
+.hud-unit {
+    font-size: 0.7rem;
+    color: #A0A4AD;
+}
+
+/* Dark work tile with the batmobile */
+.tile-dark {
+    background-color: #0B0C10;
+    color: var(--color-yellow);
+    background-image:
+        linear-gradient(#1a1c22 1px, transparent 1px),
+        linear-gradient(90deg, #1a1c22 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.tile-dark img {
+    height: 85%;
+    width: auto;
+    filter: drop-shadow(0 0 16px rgba(230, 251, 4, 0.5));
+}
+
+@media (max-width: 768px) {
+    .hud {
+        height: 320px;
+    }
+
+    .hud-car {
+        width: 130px;
+    }
+
+    .hud-turn {
+        display: none;
+    }
+}

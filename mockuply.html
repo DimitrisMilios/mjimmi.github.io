@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockuply | M_JIMMI.SYS</title>
+    <meta name="description" content="Mockuply: a free, open-source Flutter web app that builds App Store and Google Play screenshot sets entirely in the browser.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/neo_brutalism_plogo.png">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="noise-bg"></div>
+    <div class="grid-bg"></div>
+
+    <header class="header">
+        <div class="logo">M_JIMMI.SYS</div>
+        <nav class="nav">
+            <a href="index.html" class="nav-link">BACK TO HOME</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Project Hero -->
+        <section class="project-hero">
+            <div class="work-tags project-anim">
+                <span class="tag tag-blue">FLUTTER WEB</span>
+                <span class="tag tag-pink">DEV TOOL</span>
+                <span class="tag tag-yellow">FREE &amp; OPEN SOURCE</span>
+                <span class="tag tag-black">COMING SOON</span>
+            </div>
+            <h1 class="project-title project-anim">MOCKUPLY</h1>
+            <p class="hero-subtitle project-anim" style="max-width: 800px;">
+                A free, client-side mockup studio for developers. Drop in your app screenshots, pick a layout and a device frame, and export pixel-perfect screenshot sets for the App Store and Google Play. No account, no server, no watermark.
+            </p>
+            <div class="project-links project-anim">
+                <span class="brutal-btn secondary-btn btn-disabled" aria-disabled="true">PUBLIC LAUNCH SOON</span>
+            </div>
+        </section>
+
+        <!-- Facts -->
+        <section class="project-section">
+            <div class="project-facts">
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">6</h3>
+                    <p class="stat-label">STORE LAYOUTS</p>
+                </div>
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">2</h3>
+                    <p class="stat-label">STORES, ONE CLICK</p>
+                </div>
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">0</h3>
+                    <p class="stat-label">UPLOADS TO A SERVER</p>
+                </div>
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">MIT</h3>
+                    <p class="stat-label">LICENSED</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What it does -->
+        <section class="project-section">
+            <h2 class="section-title reveal-element">WHAT_IT_DOES</h2>
+            <div class="project-columns">
+                <div class="card color-white reveal-element">
+                    <h3 class="project-card-title">THE_STUDIO</h3>
+                    <p>You work on a set of six screenshots at once in a multi-canvas workspace. Every canvas is a store-sized artboard with a headline, a subtitle and a phone frame holding your screenshot. Pick a template, tweak it, or build your own and save it as a reusable template.</p>
+                    <ul class="service-list">
+                        <li>6 layouts: angled hero left/right, headline top or bottom, centered frame, full-bleed</li>
+                        <li>Device frames: iPhone 16 Pro Max, Samsung S26 Ultra, minimal outline, raw</li>
+                        <li>One screenshot for every device, or a different one per device</li>
+                        <li>Gradient presets, a colour picker and 7 Google Fonts</li>
+                        <li>Extra text and image layers with scale, rotation, opacity and shadow</li>
+                    </ul>
+                </div>
+                <div class="card color-white reveal-element">
+                    <h3 class="project-card-title">THE_EXPORT</h3>
+                    <p>Hit download and the app renders each canvas off-screen at the exact store resolution, captures it as a PNG and zips the whole set, with a folder per store. Switching between Apple and Google re-scales every layout so the design keeps the same visual weight on both aspect ratios.</p>
+                    <ul class="service-list">
+                        <li>App Store: 1320 × 2868 px, the 6.9" display spec</li>
+                        <li>Google Play: 1440 × 2560 px</li>
+                        <li>Apple ZIP, Google ZIP, or one bundle with both</li>
+                        <li>Drafts and custom templates autosave in the browser</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Under the hood -->
+        <section class="project-section">
+            <h2 class="section-title reveal-element">UNDER_THE_HOOD</h2>
+            <div class="card color-yellow reveal-element project-tech">
+                <ul class="service-list">
+                    <li>Flutter Web with an MVVM structure: views, panels and a single editor view model driven by Provider</li>
+                    <li>Every canvas is a plain Flutter widget tree, so the preview and the export are the same pixels</li>
+                    <li>Export inserts the canvas into an off-screen Overlay inside a RepaintBoundary and calls toImage at store size</li>
+                    <li>PNGs are packed into ZIP archives in the browser and handed to the download API, nothing leaves your machine</li>
+                    <li>Templates and drafts serialise to JSON in localStorage, so a refresh never loses work</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Project Gallery -->
+        <section class="project-gallery">
+            <img src="assets/mockuply/mockuply_home.png" alt="Mockuply landing page with starter templates" class="brutal-img reveal-element">
+            <img src="assets/mockuply/mockuply_editor.png" alt="Mockuply editor with the customization sidebar open" class="brutal-img reveal-element">
+            <img src="assets/mockuply/mockuply_google_play.png" alt="Mockuply editor switched to Google Play with Samsung frames" class="brutal-img reveal-element">
+            <img src="assets/mockuply/mockuply_export.png" alt="Mockuply export dialog with App Store and Google Play ZIP options" class="brutal-img reveal-element">
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>ALL_SYSTEMS_GO © 2026 DIMITRIS MILIOS.</p>
+        <p>BUILT WITH HTML, CSS & GSAP.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

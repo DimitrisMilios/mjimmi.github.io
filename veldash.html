@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veldash | M_JIMMI.SYS</title>
+    <meta name="description" content="Veldash: an ultra-light, Batman-themed offline navigation app in native Kotlin for cheap Android car head units.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/neo_brutalism_plogo.png">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="noise-bg"></div>
+    <div class="grid-bg"></div>
+
+    <header class="header">
+        <div class="logo">M_JIMMI.SYS</div>
+        <nav class="nav">
+            <a href="index.html" class="nav-link">BACK TO HOME</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Project Hero -->
+        <section class="project-hero">
+            <div class="work-tags project-anim">
+                <span class="tag tag-black">KOTLIN</span>
+                <span class="tag tag-blue">ANDROID</span>
+                <span class="tag tag-yellow">OFFLINE NAV</span>
+                <span class="tag tag-pink">CAR HEAD UNIT</span>
+            </div>
+            <h1 class="project-title project-anim">VELDASH</h1>
+            <p class="hero-subtitle project-anim" style="max-width: 800px;">
+                A Batman-themed GPS navigator built for the cheapest Android car head units: 1 GB of RAM, Android 5.0, no Google Play Services. Native Kotlin, offline vector maps, offline routing, and a batmobile that drives along the route.
+            </p>
+            <div class="project-links project-anim">
+                <span class="brutal-btn secondary-btn btn-disabled" aria-disabled="true">PERSONAL BUILD</span>
+            </div>
+        </section>
+
+        <!-- HUD mock -->
+        <section class="project-section">
+            <div class="hud reveal-element" aria-label="Illustration of the Veldash dashboard">
+                <svg class="hud-route" viewBox="0 0 800 400" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M -10 330 C 120 300, 180 120, 330 170 S 520 300, 640 200 S 760 60, 820 90" fill="none" stroke="#E6FB04" stroke-width="10" stroke-linecap="round"/>
+                </svg>
+                <img src="assets/veldash/batmobile.webp" alt="" class="hud-car">
+                <div class="hud-island hud-pill"><span class="hud-label">TO</span> BATCAVE</div>
+                <div class="hud-island hud-turn"><span class="hud-arrow">↱</span><span class="hud-big">350 m</span><span class="hud-label">Egnatia</span></div>
+                <div class="hud-island hud-trip"><span class="hud-big hud-yellow">12 min</span><span class="hud-label">6.4 km · 21:47</span></div>
+                <div class="hud-island hud-speed">48<span class="hud-unit">km/h</span></div>
+            </div>
+        </section>
+
+        <!-- Facts -->
+        <section class="project-section">
+            <div class="project-facts">
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">1 GB</h3>
+                    <p class="stat-label">RAM TARGET</p>
+                </div>
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">~80 MB</h3>
+                    <p class="stat-label">MEASURED MEMORY WHILE DRIVING</p>
+                </div>
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">24</h3>
+                    <p class="stat-label">SPRITE FRAMES, NO 3D ENGINE</p>
+                </div>
+                <div class="stat-card reveal-element">
+                    <h3 class="stat-num">0</h3>
+                    <p class="stat-label">PLAY SERVICES</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What it does -->
+        <section class="project-section">
+            <h2 class="section-title reveal-element">WHAT_IT_DOES</h2>
+            <div class="project-columns">
+                <div class="card color-white reveal-element">
+                    <h3 class="project-card-title">OFFLINE_FIRST</h3>
+                    <p>The APK ships a vector map of Thessaloniki and Central Macedonia plus the routing data for it, so it navigates from the first start with no connection. Any OpenMapTiles .mbtiles file dropped on the SD card loads too.</p>
+                    <ul class="service-list">
+                        <li>MapLibre Native renders .mbtiles straight from the filesystem</li>
+                        <li>Map style generated in code: near-black base, yellow kept for motorways and the route</li>
+                        <li>Hybrid routing: Mapbox or OSRM online, embedded BRouter offline, automatic fallback</li>
+                        <li>Maps built from OpenStreetMap with a one-line Planetiler script</li>
+                    </ul>
+                </div>
+                <div class="card color-white reveal-element">
+                    <h3 class="project-card-title">THE_DASHBOARD</h3>
+                    <p>An edge-to-edge map with flat ink-glass islands laid out like Google Maps, but every panel is a plain XML shape and every label is the system font. No font files, no icon packs, no gradients.</p>
+                    <ul class="service-list">
+                        <li>Destination pill, next-turn card, trip island with ETA and distance</li>
+                        <li>Search with Home and Work shortcuts, saved places and recent history</li>
+                        <li>Saved places wear a badge: Batcave, Wayne Enterprises, Catwoman, Joker, Riddler</li>
+                        <li>2D / 3D chase camera, and a bat button that recenters on the car</li>
+                        <li>Other apps can hand over a destination with a geo: intent</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Under the hood -->
+        <section class="project-section">
+            <h2 class="section-title reveal-element">UNDER_THE_HOOD</h2>
+            <div class="project-columns">
+                <div class="card color-yellow reveal-element">
+                    <h3 class="project-card-title">THE_BATMOBILE</h3>
+                    <p>The car is a real 3D model, but the head unit never runs a 3D engine. It is pre-rendered once in Blender into 24 small WebP frames, about 620 KB in total. Every frame the app picks the render that matches the camera tilt and the car's heading, and cross-fades the neighbouring frame so the car morphs through corners instead of popping.</p>
+                </div>
+                <div class="card color-blue reveal-element">
+                    <h3 class="project-card-title">SMOOTH_MOTION</h3>
+                    <p>GPS gives one fix per second. A pure-Kotlin motion model turns that into a frame-rate position: on a route the car travels along the polyline at a display speed that absorbs GPS error over the next second, so it never leaves the road and never stutters when a fix is late. The camera heading lags the car by 0.35 s to show the flank in a bend.</p>
+                </div>
+                <div class="card color-pink reveal-element">
+                    <h3 class="project-card-title">MEMORY_BUDGET</h3>
+                    <p>Measured with dumpsys on a dense city centre: the tile cache was the biggest cost and buys nothing with local tiles, so it is off. Roads are two fill layers and one casing, buildings only at navigation zoom, no extrusions, no hillshade. Result: roughly 80 to 90 MB PSS during a 3D drive.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Credits -->
+        <section class="project-section">
+            <p class="project-note reveal-element">Personal build, not for store distribution: Batman and the Batmobile are trademarks of DC Comics. Car model "Batmobile Jet Car (1989)" by <a href="https://sketchfab.com/ynesolefru" target="_blank" rel="noopener noreferrer">kulonee</a>, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>, rendered to sprites.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>ALL_SYSTEMS_GO © 2026 DIMITRIS MILIOS.</p>
+        <p>BUILT WITH HTML, CSS & GSAP.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
