@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
     // Initial state
-    gsap.set(".hero-sticker", { scale: 0, rotation: -45 });
     gsap.set(".hero-shape-1", { scale: 0, opacity: 0 });
     gsap.set(".hero-shape-2", { scale: 0, opacity: 0 });
     gsap.set(".hero-btn", { y: 50, opacity: 0 });
@@ -33,13 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
             stagger: 0.1,
             ease: "expo.out"
         })
-        // Pop in the sticker with a bounce
-        .to(".hero-sticker", {
-            scale: 1,
-            rotation: -5,
-            duration: 0.8,
-            ease: "back.out(1.7)"
-        }, "-=0.6")
         // Fade in subtitle
         .to(".hero-subtitle", {
             y: 0,

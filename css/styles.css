@@ -275,13 +275,6 @@ section {
     z-index: 10;
 }
 
-.hero-sticker {
-    position: absolute;
-    top: -20px;
-    left: 20px;
-    z-index: 20;
-}
-
 .hero-title {
     font-size: clamp(3rem, 10vw, 8rem);
     letter-spacing: -2px;
@@ -733,14 +726,7 @@ section {
         text-align: center;
         margin-bottom: 0.5rem;
     }
-    
-    .hero-sticker {
-        position: relative;
-        top: 0;
-        left: 0;
-        margin-bottom: 1rem;
-    }
-    
+
     .about-sticker {
         bottom: 10px;
         right: 10px;
