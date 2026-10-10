@@ -409,12 +409,12 @@ section {
 /* Services Section */
 .services-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 3rem;
 }
 
 .service-card {
-    padding: 3rem;
+    padding: 2.5rem;
 }
 
 .card-header {
@@ -426,7 +426,13 @@ section {
 
 .card-header h3 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: clamp(1.6rem, 2vw, 2.2rem);
+    word-break: break-word;
+}
+
+/* Pink card: keep list separators visible on the dark background */
+.service-card.color-pink .service-list li {
+    border-bottom-color: var(--color-white);
 }
 
 .service-list {
@@ -468,11 +474,15 @@ section {
     height: 250px;
     border-bottom: var(--border-thick);
     overflow: hidden;
+    position: relative;
+    background-color: var(--color-black);
 }
 
 .work-placeholder {
+    position: relative;
+    top: -20%;
     width: 100%;
-    height: 100%;
+    height: 120%; /* oversized so the scroll parallax never exposes a gap */
     background-size: cover;
     background-position: center;
     filter: grayscale(100%);
@@ -482,6 +492,71 @@ section {
 .work-card:hover .work-placeholder {
     filter: grayscale(0%);
     transform: scale(1.05);
+}
+
+/* Typographic tiles for projects without a screenshot yet */
+.work-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    filter: none;
+    background-image: repeating-linear-gradient(
+        -45deg,
+        transparent 0 18px,
+        rgba(5, 5, 5, 0.12) 18px 36px
+    );
+}
+
+.work-card:hover .work-tile {
+    filter: none;
+}
+
+.tile-yellow { background-color: var(--color-yellow); color: var(--color-black); }
+.tile-blue   { background-color: var(--color-blue);   color: var(--color-white); }
+.tile-pink   { background-color: var(--color-pink);   color: var(--color-white); }
+
+.tile-text {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0 var(--color-black);
+    padding: 0 1rem;
+}
+
+.tile-blue .tile-text,
+.tile-pink .tile-text {
+    text-shadow: 4px 4px 0 rgba(5, 5, 5, 0.6);
+}
+
+.tile-sticker {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    background-color: var(--color-pink);
+    color: var(--color-white);
+}
+
+/* Disabled-looking button for unreleased projects */
+.btn-disabled {
+    cursor: not-allowed;
+    background-color: var(--color-bg);
+    color: var(--color-black);
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent 0 8px,
+        rgba(5, 5, 5, 0.08) 8px 16px
+    );
+}
+
+.btn-disabled:hover,
+.btn-disabled:focus,
+.btn-disabled:active {
+    transform: none;
+    box-shadow: var(--shadow-hard);
 }
 
 .work-content {
@@ -599,7 +674,7 @@ section {
     }
     
     .section-title {
-        font-size: 2.2rem;
+        font-size: clamp(1.4rem, 7.5vw, 2.2rem); /* keeps SELECTED_WORK on one line on phones */
         margin-bottom: 2rem;
     }
     
