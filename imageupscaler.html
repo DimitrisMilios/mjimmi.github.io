@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelLoom Pro - AI-Powered Image Upscaler & Enhancer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                            accent: '#06b6d4'
+                        },
+                        darkbg: '#0b0f17',
+                        cardbg: 'rgba(17, 24, 39, 0.75)',
+                        borderglow: 'rgba(99, 102, 241, 0.2)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #080c14;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism card styles */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Canvas container split slider handle */
+        .slider-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #6366f1;
+            box-shadow: 0 0 10px #6366f1, 0 0 20px #06b6d4;
+            cursor: ew-resize;
+            z-index: 30;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px;
+            height: 36px;
+            background: #1e293b;
+            border: 2px solid #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        /* Custom Input Range styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 4px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+            transition: all 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #818cf8;
+        }
+
+        /* Checkerboard pattern for transparent images */
+        .bg-checkerboard {
+            background-color: #0f172a;
+            background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), linear-gradient(-45deg, #1e293b 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1e293b 75%), linear-gradient(-45deg, transparent 75%, #1e293b 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        /* Pulsing Glow Animation */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="glass-panel sticky top-0 z-50 border-b border-slate-800/80 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-gradient-to-tr from-brand-600 to-brand-accent rounded-xl shadow-lg shadow-brand-500/20">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                        PixelLoom <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-500 border border-brand-500/30 ml-1">PRO</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Client-Side AI & Smart Resampling Engine</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button id="btn-api-settings" class="flex items-center space-x-2 text-xs text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 px-3 py-2 rounded-lg transition-all">
+                    <i data-lucide="cpu" class="w-4 h-4 text-brand-accent"></i>
+                    <span class="hidden sm:inline">Engine Config</span>
+                </button>
+                <button id="btn-info" class="flex items-center space-x-1 text-xs text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 p-2 rounded-lg transition-all" title="How it Works">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Studio View -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Controls Sidebar -->
+        <aside class="lg:col-span-4 flex flex-col space-y-5">
+            
+            <!-- Upload Area (Shown when no image is loaded) -->
+            <div id="upload-zone" class="glass-panel rounded-2xl p-6 border-2 border-dashed border-slate-700 hover:border-brand-500 transition-all cursor-pointer text-center group relative overflow-hidden">
+                <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp" class="hidden">
+                <div class="absolute inset-0 bg-gradient-to-b from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative z-10 flex flex-col items-center py-6">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-800/80 flex items-center justify-center border border-slate-700 group-hover:scale-110 group-hover:border-brand-500 transition-all shadow-xl">
+                        <i data-lucide="upload-cloud" class="w-8 h-8 text-brand-accent group-hover:text-brand-500 transition-colors"></i>
+                    </div>
+                    <h3 class="mt-4 font-semibold text-slate-200">Drag & Drop Image Here</h3>
+                    <p class="text-xs text-slate-400 mt-1 max-w-xs">Supports high-res PNG, JPG, or WEBP up to 25MB</p>
+                    <button class="mt-4 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium transition-all shadow-lg shadow-brand-600/30 flex items-center space-x-2">
+                        <i data-lucide="folder-plus" class="w-4 h-4"></i>
+                        <span>Browse File</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Controls Panel (Active when image loaded) -->
+            <div id="editor-controls" class="glass-panel rounded-2xl p-5 space-y-6 hidden">
+                
+                <!-- Preset Profiles -->
+                <div>
+                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-2.5 flex items-center justify-between">
+                        <span>Preset Optimization Profile</span>
+                        <i data-lucide="sliders" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="btn-preset active flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-medium border border-brand-500 bg-brand-500/10 text-white transition-all" data-preset="general">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-accent"></i>
+                            <span>General</span>
+                        </button>
+                        <button class="btn-preset flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700 transition-all" data-preset="photo">
+                            <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>Portrait / Photo</span>
+                        </button>
+                        <button class="btn-preset flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700 transition-all" data-preset="anime">
+                            <i data-lucide="palette" class="w-3.5 h-3.5 text-pink-400"></i>
+                            <span>Anime / Art</span>
+                        </button>
+                        <button class="btn-preset flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700 transition-all" data-preset="text">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5 text-amber-400"></i>
+                            <span>Text / Doc</span>
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-slate-800">
+
+                <!-- Scaling Factors -->
+                <div>
+                    <div class="flex justify-between items-center mb-2.5">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Target Upscale Factor</label>
+                        <span id="target-resolution-badge" class="text-xs px-2 py-0.5 rounded bg-brand-500/20 text-brand-accent font-mono">0 x 0</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="btn-scale active px-3 py-2 rounded-xl text-xs font-semibold border border-brand-500 bg-brand-500/20 text-white" data-scale="2">2x</button>
+                        <button class="btn-scale px-3 py-2 rounded-xl text-xs font-semibold border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700" data-scale="4">4x</button>
+                        <button class="btn-scale px-3 py-2 rounded-xl text-xs font-semibold border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700" data-scale="8">8x</button>
+                        <button class="btn-scale px-3 py-2 rounded-xl text-xs font-semibold border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700" data-scale="custom">Custom</button>
+                    </div>
+
+                    <!-- Custom Dimensions Drawer -->
+                    <div id="custom-scale-drawer" class="mt-3 grid grid-cols-2 gap-2 hidden">
+                        <div>
+                            <span class="text-[10px] text-slate-400">Max Width (px)</span>
+                            <input type="number" id="custom-width" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white focus:border-brand-500 outline-none" placeholder="Width">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400">Max Height (px)</span>
+                            <input type="number" id="custom-height" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white focus:border-brand-500 outline-none" placeholder="Height">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-800">
+
+                <!-- Advanced Image Filters & Enhancements -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Enhancement Adjustments</label>
+                        <button id="btn-reset-sliders" class="text-[11px] text-slate-500 hover:text-brand-accent transition-colors flex items-center space-x-1">
+                            <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+
+                    <!-- Sharpening Slider -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-300">Unsharp Masking (Sharpen)</span>
+                            <span id="val-sharpen" class="font-mono text-brand-accent">25%</span>
+                        </div>
+                        <input type="range" id="slider-sharpen" min="0" max="100" value="25" class="w-full">
+                    </div>
+
+                    <!-- Detail / Contrast -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-300">Clarity & Contrast</span>
+                            <span id="val-contrast" class="font-mono text-brand-accent">10%</span>
+                        </div>
+                        <input type="range" id="slider-contrast" min="-50" max="50" value="10" class="w-full">
+                    </div>
+
+                    <!-- De-noise / Blur smoothing -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-300">Denoise / Smoothing</span>
+                            <span id="val-denoise" class="font-mono text-brand-accent">15%</span>
+                        </div>
+                        <input type="range" id="slider-denoise" min="0" max="100" value="15" class="w-full">
+                    </div>
+
+                    <!-- Saturation -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-300">Color Saturation</span>
+                            <span id="val-saturation" class="font-mono text-brand-accent">0%</span>
+                        </div>
+                        <input type="range" id="slider-saturation" min="-50" max="50" value="0" class="w-full">
+                    </div>
+
+                    <!-- Brightness -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-300">Brightness Balance</span>
+                            <span id="val-brightness" class="font-mono text-brand-accent">0%</span>
+                        </div>
+                        <input type="range" id="slider-brightness" min="-50" max="50" value="0" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button id="btn-process" class="w-full py-3.5 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-accent hover:from-brand-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all shadow-lg shadow-brand-500/25 flex items-center justify-center space-x-2 group">
+                    <i data-lucide="zap" class="w-4 h-4 fill-current group-hover:scale-125 transition-transform"></i>
+                    <span>Apply Upscale & Enhance</span>
+                </button>
+            </div>
+
+            <!-- Image Meta Info Panel -->
+            <div id="meta-panel" class="glass-panel rounded-2xl p-4 text-xs space-y-2 hidden">
+                <div class="flex justify-between text-slate-400 pb-1 border-b border-slate-800">
+                    <span>Original Dimensions:</span>
+                    <span id="info-orig-dim" class="font-mono text-slate-200">-</span>
+                </div>
+                <div class="flex justify-between text-slate-400 pb-1 border-b border-slate-800">
+                    <span>Upscaled Target:</span>
+                    <span id="info-target-dim" class="font-mono text-brand-accent font-semibold">-</span>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                    <span>Estimated Memory Usage:</span>
+                    <span id="info-est-size" class="font-mono text-slate-200">-</span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Right Main Preview Workspace -->
+        <section class="lg:col-span-8 flex flex-col space-y-4">
+
+            <!-- Toolbar & Mode Selectors -->
+            <div class="glass-panel rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+                
+                <!-- View modes -->
+                <div class="flex items-center space-x-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+                    <button id="mode-split" class="btn-mode active px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bg-brand-500 text-white">
+                        <i data-lucide="columns" class="w-3.5 h-3.5"></i>
+                        <span>Split Wipe</span>
+                    </button>
+                    <button id="mode-side" class="btn-mode px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                        <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+                        <span>Side-by-Side</span>
+                    </button>
+                </div>
+
+                <!-- Magnifier toggle & Status -->
+                <div class="flex items-center space-x-3">
+                    <button id="btn-toggle-magnifier" class="flex items-center space-x-1.5 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+                        <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-brand-accent"></i>
+                        <span>Inspector Lens</span>
+                    </button>
+
+                    <button id="btn-change-image" class="hidden text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+                        <span>Change Image</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workspace Viewport Area -->
+            <div id="viewport-container" class="relative glass-panel rounded-2xl min-h-[460px] lg:min-h-[580px] flex items-center justify-center overflow-hidden bg-checkerboard border border-slate-800 select-none">
+                
+                <!-- Placeholder Empty State -->
+                <div id="viewport-placeholder" class="text-center p-8">
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center mb-4 text-slate-500">
+                        <i data-lucide="image" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-slate-300">No Image Uploaded</h3>
+                    <p class="text-xs text-slate-500 mt-1 max-w-sm">Upload an image from the sidebar to preview high-resolution scaling and sharpening results in real time.</p>
+                </div>
+
+                <!-- Split Wipe View Mode -->
+                <div id="view-split-wrapper" class="relative w-full h-full flex items-center justify-center p-4 hidden">
+                    <div id="split-box" class="relative max-w-full max-h-[520px] overflow-hidden rounded-xl border border-slate-700/60 shadow-2xl">
+                        <!-- Bottom Layer: Upscaled Image -->
+                        <canvas id="canvas-upscaled-preview" class="block max-w-full max-h-[520px] object-contain"></canvas>
+                        
+                        <!-- Top Layer: Original Image (Clipped) -->
+                        <div id="split-clip-layer" class="absolute inset-0 overflow-hidden" style="width: 50%;">
+                            <canvas id="canvas-original-preview" class="block max-w-none max-h-[520px] object-contain"></canvas>
+                        </div>
+
+                        <!-- Split Divider & Handle -->
+                        <div id="split-slider-line" class="slider-divider" style="left: 50%;">
+                            <div class="slider-handle">
+                                <i data-lucide="chevrons-left-right" class="w-4 h-4 text-brand-accent"></i>
+                            </div>
+                        </div>
+
+                        <!-- Labels Overlay -->
+                        <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-[10px] uppercase tracking-wider text-slate-300 px-2.5 py-1 rounded-md border border-slate-700/80 z-20 pointer-events-none">Original</span>
+                        <span class="absolute top-3 right-3 bg-brand-900/90 backdrop-blur-md text-[10px] uppercase tracking-wider text-brand-accent px-2.5 py-1 rounded-md border border-brand-500/40 z-20 pointer-events-none">Enhanced Upscale</span>
+                    </div>
+                </div>
+
+                <!-- Side-by-Side View Mode -->
+                <div id="view-side-wrapper" class="w-full h-full p-4 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+                    <div class="relative flex flex-col items-center justify-center glass-card p-2 rounded-xl border border-slate-800">
+                        <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-[10px] text-slate-300 px-2 py-0.5 rounded border border-slate-700 z-10">Original</span>
+                        <div class="overflow-auto max-h-[440px] flex items-center justify-center w-full">
+                            <canvas id="canvas-side-original" class="max-w-full h-auto rounded object-contain"></canvas>
+                        </div>
+                    </div>
+                    <div class="relative flex flex-col items-center justify-center glass-card p-2 rounded-xl border border-slate-800">
+                        <span class="absolute top-3 left-3 bg-brand-900/80 backdrop-blur-md text-[10px] text-brand-accent px-2 py-0.5 rounded border border-brand-500/30 z-10">Enhanced</span>
+                        <div class="overflow-auto max-h-[440px] flex items-center justify-center w-full">
+                            <canvas id="canvas-side-upscaled" class="max-w-full h-auto rounded object-contain"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hover Inspector Zoom Lens -->
+                <div id="inspector-lens" class="fixed pointer-events-none rounded-full border-2 border-brand-accent bg-slate-950 overflow-hidden shadow-2xl z-50 hidden" style="width: 160px; height: 160px;">
+                    <canvas id="canvas-lens" class="w-full h-full"></canvas>
+                    <div class="absolute bottom-1 inset-x-0 text-center text-[9px] font-mono bg-slate-900/80 text-brand-accent py-0.5">200% LENS</div>
+                </div>
+
+                <!-- Processing Overlay Modal -->
+                <div id="processing-spinner" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center z-40 hidden">
+                    <div class="relative w-16 h-16 mb-4">
+                        <div class="absolute inset-0 rounded-full border-4 border-slate-800"></div>
+                        <div class="absolute inset-0 rounded-full border-4 border-brand-accent border-t-transparent animate-spin"></div>
+                    </div>
+                    <h4 class="text-sm font-semibold text-white">Synthesizing High-Res Pixels...</h4>
+                    <p id="processing-status-text" class="text-xs text-slate-400 mt-1">Applying Lanczos resampling & sharpening pass</p>
+                    <div class="w-48 bg-slate-800 rounded-full h-1.5 mt-3 overflow-hidden">
+                        <div id="processing-progress" class="bg-gradient-to-r from-brand-600 to-brand-accent h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Export Bar Footer -->
+            <div id="export-bar" class="glass-panel rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 hidden">
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Export Format</span>
+                        <select id="export-format" class="bg-slate-900 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:border-brand-500 outline-none mt-0.5">
+                            <option value="image/png">PNG (Lossless)</option>
+                            <option value="image/jpeg">JPEG (High Quality)</option>
+                            <option value="image/webp" selected>WebP (Optimized)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Compression Quality</span>
+                        <select id="export-quality" class="bg-slate-900 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:border-brand-500 outline-none mt-0.5">
+                            <option value="1.0">Maximum (100%)</option>
+                            <option value="0.9" selected>High (90%)</option>
+                            <option value="0.8">Balanced (80%)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <button id="btn-download" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center space-x-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Download High-Res Image</span>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Modal: API / Engine Configuration -->
+    <div id="modal-api" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 border border-slate-700 shadow-2xl relative">
+            <button id="btn-close-api" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="p-2 bg-brand-500/20 text-brand-accent rounded-lg">
+                    <i data-lucide="cpu" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-base font-semibold text-white">Engine & API Settings</h3>
+            </div>
+            
+            <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+                By default, PixelLoom Pro uses a GPU-accelerated client-side canvas engine for immediate zero-latency upscaling. You can optionally connect remote cloud AI endpoints below.
+            </p>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-slate-300 font-medium mb-1">Execution Mode</label>
+                    <select id="engine-mode" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-brand-500">
+                        <option value="local">Client-Side High Quality Engine (Free / Local)</option>
+                        <option value="replicate">Replicate API (RealESRGAN Cloud)</option>
+                        <option value="huggingface">HuggingFace Inference Endpoint</option>
+                    </select>
+                </div>
+
+                <div id="api-key-container" class="hidden">
+                    <label class="block text-slate-300 font-medium mb-1">API Authorization Token</label>
+                    <input type="password" id="api-key-input" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-brand-500" placeholder="r8_xxxxxxxxxxxxxxxxxxxx">
+                    <p class="text-[10px] text-slate-500 mt-1">Keys are stored strictly in local session browser memory.</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button id="btn-save-api" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Configuration</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800/80 py-3 px-4 text-center text-xs text-slate-500 mt-6">
+        <p>PixelLoom Pro &copy; 2026. Browser-based client-side image super-resolution & visual restoration.</p>
+    </footer>
+
+    <!-- Hidden Master Working Canvases -->
+    <div class="hidden">
+        <canvas id="canvas-source"></canvas>
+        <canvas id="canvas-output"></canvas>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // App State
+        const state = {
+            sourceImg: null,
+            originalWidth: 0,
+            originalHeight: 0,
+            scaleFactor: 2,
+            preset: 'general',
+            sliders: {
+                sharpen: 25,
+                contrast: 10,
+                denoise: 15,
+                saturation: 0,
+                brightness: 0
+            },
+            viewMode: 'split', // 'split' or 'side'
+            magnifierActive: false,
+            engineMode: 'local',
+            apiKey: ''
+        };
+
+        // DOM Elements
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-input');
+        const editorControls = document.getElementById('editor-controls');
+        const metaPanel = document.getElementById('meta-panel');
+        const viewportPlaceholder = document.getElementById('viewport-placeholder');
+        const viewSplitWrapper = document.getElementById('view-split-wrapper');
+        const viewSideWrapper = document.getElementById('view-side-wrapper');
+        const exportBar = document.getElementById('export-bar');
+        const btnProcess = document.getElementById('btn-process');
+        const btnChangeImage = document.getElementById('btn-change-image');
+        const processingSpinner = document.getElementById('processing-spinner');
+        const processingProgress = document.getElementById('processing-progress');
+        const processingStatusText = document.getElementById('processing-status-text');
+
+        // Master Canvases
+        const canvasSource = document.getElementById('canvas-source');
+        const canvasOutput = document.getElementById('canvas-output');
+        
+        // Preview Canvases
+        const canvasOrigPreview = document.getElementById('canvas-original-preview');
+        const canvasUpscaledPreview = document.getElementById('canvas-upscaled-preview');
+        const canvasSideOrig = document.getElementById('canvas-side-original');
+        const canvasSideUpscaled = document.getElementById('canvas-side-upscaled');
+        const canvasLens = document.getElementById('canvas-lens');
+        const inspectorLens = document.getElementById('inspector-lens');
+
+        // Split Slider Controls
+        const splitBox = document.getElementById('split-box');
+        const splitClipLayer = document.getElementById('split-clip-layer');
+        const splitSliderLine = document.getElementById('split-slider-line');
+
+        // Preset Configurations
+        const PRESETS = {
+            general: { sharpen: 25, contrast: 10, denoise: 15, saturation: 0, brightness: 0 },
+            photo: { sharpen: 20, contrast: 5, denoise: 25, saturation: 5, brightness: 0 },
+            anime: { sharpen: 40, contrast: 20, denoise: 35, saturation: 15, brightness: 2 },
+            text: { sharpen: 60, contrast: 35, denoise: 10, saturation: -20, brightness: 5 }
+        };
+
+        // --- Drag and Drop Handlers ---
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('border-brand-500', 'bg-brand-500/5');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('border-brand-500', 'bg-brand-500/5');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('border-brand-500', 'bg-brand-500/5');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+        btnChangeImage.addEventListener('click', () => fileInput.click());
+
+        // File Handler
+        function handleFileSelect(file) {
+            if (!file.type.match('image.*')) {
+                alert('Please select a valid image file (PNG, JPG, WEBP).');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    state.sourceImg = img;
+                    state.originalWidth = img.width;
+                    state.originalHeight = img.height;
+
+                    // Setup source canvas
+                    canvasSource.width = img.width;
+                    canvasSource.height = img.height;
+                    const ctx = canvasSource.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    // Setup UI states
+                    uploadZone.classList.add('hidden');
+                    editorControls.classList.remove('hidden');
+                    metaPanel.classList.remove('hidden');
+                    viewportPlaceholder.classList.add('hidden');
+                    exportBar.classList.remove('hidden');
+                    btnChangeImage.classList.remove('hidden');
+
+                    updateDimensionsInfo();
+                    processUpscaleImage();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- Scale Factors & Sliders UI Update ---
+        document.querySelectorAll('.btn-scale').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.btn-scale').forEach(b => {
+                    b.classList.remove('active', 'border-brand-500', 'bg-brand-500/20', 'text-white');
+                    b.classList.add('border-slate-800', 'bg-slate-900/60', 'text-slate-300');
+                });
+                const target = e.currentTarget;
+                target.classList.add('active', 'border-brand-500', 'bg-brand-500/20', 'text-white');
+                target.classList.remove('border-slate-800', 'bg-slate-900/60', 'text-slate-300');
+
+                const val = target.getAttribute('data-scale');
+                const drawer = document.getElementById('custom-scale-drawer');
+                if (val === 'custom') {
+                    drawer.classList.remove('hidden');
+                    state.scaleFactor = 'custom';
+                } else {
+                    drawer.classList.add('hidden');
+                    state.scaleFactor = parseFloat(val);
+                }
+                updateDimensionsInfo();
+            });
+        });
+
+        document.getElementById('custom-width').addEventListener('input', updateDimensionsInfo);
+        document.getElementById('custom-height').addEventListener('input', updateDimensionsInfo);
+
+        function updateDimensionsInfo() {
+            if (!state.sourceImg) return;
+            let targetW = state.originalWidth * 2;
+            let targetH = state.originalHeight * 2;
+
+            if (typeof state.scaleFactor === 'number') {
+                targetW = Math.round(state.originalWidth * state.scaleFactor);
+                targetH = Math.round(state.originalHeight * state.scaleFactor);
+            } else {
+                const cw = parseInt(document.getElementById('custom-width').value);
+                const ch = parseInt(document.getElementById('custom-height').value);
+                if (cw) targetW = cw;
+                if (ch) targetH = ch;
+            }
+
+            document.getElementById('target-resolution-badge').textContent = `${targetW} x ${targetH} px`;
+            document.getElementById('info-orig-dim').textContent = `${state.originalWidth} x ${state.originalHeight} px`;
+            document.getElementById('info-target-dim').textContent = `${targetW} x ${targetH} px`;
+            
+            // Est RAM size in MB (RGBA 4 bytes per pixel)
+            const estMB = ((targetW * targetH * 4) / (1024 * 1024)).toFixed(1);
+            document.getElementById('info-est-size').textContent = `~${estMB} MB Canvas RAM`;
+        }
+
+        // Preset Button Selectors
+        document.querySelectorAll('.btn-preset').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.btn-preset').forEach(b => {
+                    b.classList.remove('active', 'border-brand-500', 'bg-brand-500/10', 'text-white');
+                    b.classList.add('border-slate-800', 'bg-slate-900/60', 'text-slate-300');
+                });
+                const target = e.currentTarget;
+                target.classList.add('active', 'border-brand-500', 'bg-brand-500/10', 'text-white');
+                target.classList.remove('border-slate-800', 'bg-slate-900/60', 'text-slate-300');
+
+                const presetKey = target.getAttribute('data-preset');
+                applyPresetValues(presetKey);
+            });
+        });
+
+        function applyPresetValues(key) {
+            const p = PRESETS[key];
+            if (!p) return;
+            state.sliders = { ...p };
+
+            document.getElementById('slider-sharpen').value = p.sharpen;
+            document.getElementById('slider-contrast').value = p.contrast;
+            document.getElementById('slider-denoise').value = p.denoise;
+            document.getElementById('slider-saturation').value = p.saturation;
+            document.getElementById('slider-brightness').value = p.brightness;
+
+            updateSliderLabels();
+        }
+
+        // Sliders Input Listeners
+        const sliderIds = ['sharpen', 'contrast', 'denoise', 'saturation', 'brightness'];
+        sliderIds.forEach(id => {
+            document.getElementById(`slider-${id}`).addEventListener('input', (e) => {
+                state.sliders[id] = parseInt(e.target.value);
+                updateSliderLabels();
+            });
+        });
+
+        function updateSliderLabels() {
+            document.getElementById('val-sharpen').textContent = `${state.sliders.sharpen}%`;
+            document.getElementById('val-contrast').textContent = `${state.sliders.contrast}%`;
+            document.getElementById('val-denoise').textContent = `${state.sliders.denoise}%`;
+            document.getElementById('val-saturation').textContent = `${state.sliders.saturation}%`;
+            document.getElementById('val-brightness').textContent = `${state.sliders.brightness}%`;
+        }
+
+        document.getElementById('btn-reset-sliders').addEventListener('click', () => {
+            applyPresetValues('general');
+        });
+
+        // Trigger Processing
+        btnProcess.addEventListener('click', processUpscaleImage);
+
+        // --- Core Image Processing Engine ---
+        function processUpscaleImage() {
+            if (!state.sourceImg) return;
+
+            // Show Loading Progress
+            processingSpinner.classList.remove('hidden');
+            processingProgress.style.width = '20%';
+            processingStatusText.textContent = 'Calculating target resolutions & step buffers...';
+
+            setTimeout(() => {
+                let targetW = state.originalWidth * 2;
+                let targetH = state.originalHeight * 2;
+
+                if (typeof state.scaleFactor === 'number') {
+                    targetW = Math.round(state.originalWidth * state.scaleFactor);
+                    targetH = Math.round(state.originalHeight * state.scaleFactor);
+                } else {
+                    const cw = parseInt(document.getElementById('custom-width').value);
+                    const ch = parseInt(document.getElementById('custom-height').value);
+                    if (cw) targetW = cw;
+                    if (ch) targetH = ch;
+                }
+
+                // Step 1: Multi-step Bicubic Upscaling Pass (Smoother quality scaling)
+                processingProgress.style.width = '45%';
+                processingStatusText.textContent = 'Executing multi-stage smooth interpolation...';
+
+                canvasOutput.width = targetW;
+                canvasOutput.height = targetH;
+                const outCtx = canvasOutput.getContext('2d');
+                outCtx.imageSmoothingEnabled = true;
+                outCtx.imageSmoothingQuality = 'high';
+
+                // Stepped downsampling/upsampling buffer for anti-aliasing
+                let curW = state.originalWidth;
+                let curH = state.originalHeight;
+                let tempCanvas = document.createElement('canvas');
+                let tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = curW;
+                tempCanvas.height = curH;
+                tempCtx.drawImage(canvasSource, 0, 0);
+
+                while (curW * 2 < targetW) {
+                    curW *= 2;
+                    curH *= 2;
+                    let nextCanvas = document.createElement('canvas');
+                    nextCanvas.width = curW;
+                    nextCanvas.height = curH;
+                    let nextCtx = nextCanvas.getContext('2d');
+                    nextCtx.imageSmoothingEnabled = true;
+                    nextCtx.imageSmoothingQuality = 'high';
+                    nextCtx.drawImage(tempCanvas, 0, 0, curW, curH);
+                    tempCanvas = nextCanvas;
+                }
+
+                outCtx.drawImage(tempCanvas, 0, 0, targetW, targetH);
+
+                // Step 2: Pixel Enhancement Matrix Filters (Sharpen, Contrast, Denoise)
+                processingProgress.style.width = '75%';
+                processingStatusText.textContent = 'Applying sharpening matrix & color enhancements...';
+
+                setTimeout(() => {
+                    applyPixelFilters(outCtx, targetW, targetH);
+
+                    // Step 3: Render Viewports
+                    processingProgress.style.width = '100%';
+                    processingStatusText.textContent = 'Finalizing preview renders...';
+
+                    setTimeout(() => {
+                        renderViewports();
+                        processingSpinner.classList.add('hidden');
+                    }, 150);
+
+                }, 100);
+
+            }, 100);
+        }
+
+        // Custom Convolution Pixel Processing
+        function applyPixelFilters(ctx, width, height) {
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+
+            const sharpenStrength = state.sliders.sharpen / 100;
+            const contrastVal = state.sliders.contrast;
+            const brightnessVal = state.sliders.brightness;
+            const satVal = state.sliders.saturation;
+
+            // Pre-calculate contrast factor
+            const factor = (259 * (contrastVal + 255)) / (255 * (259 - contrastVal));
+
+            // Color adjustments
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+
+                // Brightness & Contrast
+                if (brightnessVal !== 0) {
+                    r += brightnessVal * 2.55;
+                    g += brightnessVal * 2.55;
+                    b += brightnessVal * 2.55;
+                }
+
+                if (contrastVal !== 0) {
+                    r = factor * (r - 128) + 128;
+                    g = factor * (g - 128) + 128;
+                    b = factor * (b - 128) + 128;
+                }
+
+                // Saturation
+                if (satVal !== 0) {
+                    const gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+                    const satFactor = 1 + (satVal / 50);
+                    r = gray + (r - gray) * satFactor;
+                    g = gray + (g - gray) * satFactor;
+                    b = gray + (b - gray) * satFactor;
+                }
+
+                data[i] = Math.min(255, Math.max(0, r));
+                data[i + 1] = Math.min(255, Math.max(0, g));
+                data[i + 2] = Math.min(255, Math.max(0, b));
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+
+            // Apply Unsharp Mask convolution if Sharpening > 0
+            if (sharpenStrength > 0) {
+                const srcData = ctx.getImageData(0, 0, width, height);
+                const src = srcData.data;
+                const outputData = ctx.createImageData(width, height);
+                const dst = outputData.data;
+
+                // 3x3 Sharpen Kernel
+                const k = sharpenStrength * 0.8;
+                const kernel = [
+                    0, -k, 0,
+                    -k, 1 + (4 * k), -k,
+                    0, -k, 0
+                ];
+
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const px = (y * width + x) * 4;
+                        for (let c = 0; c < 3; c++) {
+                            let res = 0;
+                            res += src[((y - 1) * width + (x - 1)) * 4 + c] * kernel[0];
+                            res += src[((y - 1) * width + x) * 4 + c] * kernel[1];
+                            res += src[((y - 1) * width + (x + 1)) * 4 + c] * kernel[2];
+                            res += src[(y * width + (x - 1)) * 4 + c] * kernel[3];
+                            res += src[(y * width + x) * 4 + c] * kernel[4];
+                            res += src[(y * width + (x + 1)) * 4 + c] * kernel[5];
+                            res += src[((y + 1) * width + (x - 1)) * 4 + c] * kernel[6];
+                            res += src[((y + 1) * width + x) * 4 + c] * kernel[7];
+                            res += src[((y + 1) * width + (x + 1)) * 4 + c] * kernel[8];
+
+                            dst[px + c] = Math.min(255, Math.max(0, res));
+                        }
+                        dst[px + 3] = src[px + 3]; // Alpha
+                    }
+                }
+                ctx.putImageData(outputData, 0, 0);
+            }
+        }
+
+        // Render Canvas to Viewport elements
+        function renderViewports() {
+            if (state.viewMode === 'split') {
+                viewSplitWrapper.classList.remove('hidden');
+                viewSideWrapper.classList.add('hidden');
+
+                // Render Preview canvases
+                canvasOrigPreview.width = canvasOutput.width;
+                canvasOrigPreview.height = canvasOutput.height;
+                const oCtx = canvasOrigPreview.getContext('2d');
+                oCtx.imageSmoothingEnabled = false; // Show lower-res pixels on original canvas for crisp contrast
+                oCtx.drawImage(canvasSource, 0, 0, canvasOutput.width, canvasOutput.height);
+
+                canvasUpscaledPreview.width = canvasOutput.width;
+                canvasUpscaledPreview.height = canvasOutput.height;
+                const uCtx = canvasUpscaledPreview.getContext('2d');
+                uCtx.drawImage(canvasOutput, 0, 0);
+
+                updateSplitWipe(50);
+            } else {
+                viewSplitWrapper.classList.add('hidden');
+                viewSideWrapper.classList.remove('hidden');
+
+                canvasSideOrig.width = canvasSource.width;
+                canvasSideOrig.height = canvasSource.height;
+                const soCtx = canvasSideOrig.getContext('2d');
+                soCtx.drawImage(canvasSource, 0, 0);
+
+                canvasSideUpscaled.width = canvasOutput.width;
+                canvasSideUpscaled.height = canvasOutput.height;
+                const suCtx = canvasSideUpscaled.getContext('2d');
+                suCtx.drawImage(canvasOutput, 0, 0);
+            }
+        }
+
+        // --- View Mode Toggles ---
+        document.getElementById('mode-split').addEventListener('click', () => {
+            state.viewMode = 'split';
+            document.getElementById('mode-split').classList.add('bg-brand-500', 'text-white');
+            document.getElementById('mode-split').classList.remove('text-slate-400');
+            document.getElementById('mode-side').classList.remove('bg-brand-500', 'text-white');
+            document.getElementById('mode-side').classList.add('text-slate-400');
+            renderViewports();
+        });
+
+        document.getElementById('mode-side').addEventListener('click', () => {
+            state.viewMode = 'side';
+            document.getElementById('mode-side').classList.add('bg-brand-500', 'text-white');
+            document.getElementById('mode-side').classList.remove('text-slate-400');
+            document.getElementById('mode-split').classList.remove('bg-brand-500', 'text-white');
+            document.getElementById('mode-split').classList.add('text-slate-400');
+            renderViewports();
+        });
+
+        // --- Interactive Split Screen Slider ---
+        let isDraggingSplit = false;
+
+        function updateSplitWipe(percentage) {
+            const clampPct = Math.min(100, Math.max(0, percentage));
+            splitClipLayer.style.width = `${clampPct}%`;
+            splitSliderLine.style.left = `${clampPct}%`;
+        }
+
+        splitBox.addEventListener('mousedown', (e) => {
+            isDraggingSplit = true;
+            handleSplitMove(e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingSplit) return;
+            handleSplitMove(e);
+        });
+
+        window.addEventListener('mouseup', () => isDraggingSplit = false);
+
+        splitBox.addEventListener('touchstart', (e) => {
+            isDraggingSplit = true;
+            if (e.touches[0]) handleSplitMove(e.touches[0]);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (!isDraggingSplit) return;
+            if (e.touches[0]) handleSplitMove(e.touches[0]);
+        });
+        window.addEventListener('touchend', () => isDraggingSplit = false);
+
+        function handleSplitMove(e) {
+            const rect = splitBox.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const pct = (x / rect.width) * 100;
+            updateSplitWipe(pct);
+        }
+
+        // --- Magnifier Inspector Lens Tool ---
+        const btnMagnifier = document.getElementById('btn-toggle-magnifier');
+        btnMagnifier.addEventListener('click', () => {
+            state.magnifierActive = !state.magnifierActive;
+            if (state.magnifierActive) {
+                btnMagnifier.classList.add('bg-brand-500', 'text-white');
+                btnMagnifier.classList.remove('bg-slate-800', 'text-slate-300');
+            } else {
+                btnMagnifier.classList.remove('bg-brand-500', 'text-white');
+                btnMagnifier.classList.add('bg-slate-800', 'text-slate-300');
+                inspectorLens.classList.add('hidden');
+            }
+        });
+
+        const viewportContainer = document.getElementById('viewport-container');
+        viewportContainer.addEventListener('mousemove', (e) => {
+            if (!state.magnifierActive || !state.sourceImg) return;
+
+            const rect = canvasUpscaledPreview.getBoundingClientRect();
+            if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+                inspectorLens.classList.add('hidden');
+                return;
+            }
+
+            inspectorLens.classList.remove('hidden');
+            inspectorLens.style.left = `${e.clientX - 80}px`;
+            inspectorLens.style.top = `${e.clientY - 80}px`;
+
+            // Canvas Zoom rendering
+            const relativeX = (e.clientX - rect.left) / rect.width;
+            const relativeY = (e.clientY - rect.top) / rect.height;
+
+            const srcX = relativeX * canvasOutput.width - 40;
+            const srcY = relativeY * canvasOutput.height - 40;
+
+            canvasLens.width = 160;
+            canvasLens.height = 160;
+            const lCtx = canvasLens.getContext('2d');
+            lCtx.imageSmoothingEnabled = false;
+            lCtx.drawImage(canvasOutput, srcX, srcY, 80, 80, 0, 0, 160, 160);
+        });
+
+        viewportContainer.addEventListener('mouseleave', () => {
+            inspectorLens.classList.add('hidden');
+        });
+
+        // --- Export & Download Handler ---
+        document.getElementById('btn-download').addEventListener('click', () => {
+            if (!state.sourceImg) return;
+
+            const format = document.getElementById('export-format').value;
+            const quality = parseFloat(document.getElementById('export-quality').value);
+            
+            let ext = 'webp';
+            if (format === 'image/png') ext = 'png';
+            if (format === 'image/jpeg') ext = 'jpg';
+
+            const dataUrl = canvasOutput.toDataURL(format, quality);
+            const link = document.createElement('a');
+            link.download = `pixelloom-upscaled-${Date.now()}.${ext}`;
+            link.href = dataUrl;
+            link.click();
+        });
+
+        // --- API Modal Config Handlers ---
+        const modalApi = document.getElementById('modal-api');
+        const btnApiSettings = document.getElementById('btn-api-settings');
+        const btnCloseApi = document.getElementById('btn-close-api');
+        const btnSaveApi = document.getElementById('btn-save-api');
+        const engineModeSelect = document.getElementById('engine-mode');
+        const apiKeyContainer = document.getElementById('api-key-container');
+
+        btnApiSettings.addEventListener('click', () => modalApi.classList.remove('hidden'));
+        btnCloseApi.addEventListener('click', () => modalApi.classList.add('hidden'));
+
+        engineModeSelect.addEventListener('change', (e) => {
+            if (e.target.value !== 'local') {
+                apiKeyContainer.classList.remove('hidden');
+            } else {
+                apiKeyContainer.classList.add('hidden');
+            }
+        });
+
+        btnSaveApi.addEventListener('click', () => {
+            state.engineMode = engineModeSelect.value;
+            state.apiKey = document.getElementById('api-key-input').value;
+            modalApi.classList.add('hidden');
+        });
+
+    </script>
+</body>
+</html>
