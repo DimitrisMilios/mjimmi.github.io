@@ -588,6 +588,47 @@ section {
     flex-grow: 1;
 }
 
+/* Toolkit Section */
+.toolkit {
+    padding-bottom: 0;
+}
+
+.toolkit-banner {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 3rem;
+    align-items: center;
+    padding: 3rem;
+}
+
+.toolkit-title {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    margin: 1.5rem 0 1rem;
+    text-shadow: 4px 4px 0 var(--color-black);
+}
+
+.toolkit-banner-text p {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.toolkit-banner .service-list {
+    margin: 0 0 2rem;
+}
+
+.toolkit-banner .service-list li {
+    border-bottom-color: var(--color-white);
+}
+
+@media (max-width: 768px) {
+    .toolkit-banner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 1.5rem;
+    }
+}
+
 /* Contact Section */
 .contact-box {
     border: var(--border-ultra);
